@@ -226,8 +226,17 @@ def wardial(hosts, **kwargs):
     # and use this event loop to call the `_wardial_async` function.
     # Ensure that all of the kwargs parameters get passed to `_wardial_async`.
     # You will have to do some post-processing of the results of this function to convert the output.
+    d = {"max_connections" : 500, "timeout" : 10, "schema" : "http"}
+    for key in kwargs.keys():
+        if key == "max_connections":
+            d[key] = kwargs[key]
+        if key == "timeout":
+            d[key] = kwargs[key]
+        if key == "schema":
+            d[key] = kwargs[key]
+
     loop = asyncio.new_event_loop()
-    booleans = loop.run_until_complete(_wardial_async(hosts))
+    booleans = loop.run_until_complete(_wardial_async(hosts, d["max_connections"], d["timeout"], d["schema"]))
     loop.close()
     ret = []
     for i in range(len(booleans)):
